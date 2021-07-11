@@ -50,6 +50,11 @@ export class ImageDevController {
     return this.imageService.uploadFileList(files);
   }
 
+  @Get('/meta/:imgpath')
+  getMetadata(@Param('imgpath') imageName): any {
+    return this.imageService.getMetadataByImageName(imageName);
+  }
+
   @Get(':imgpath')
   getUploadedFile(@Param('imgpath') imageName, @Res() res) {
     return this.imageService.getUploadedFile(imageName, res);
