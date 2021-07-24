@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageController } from './image.controller';
-import { ImageDevController } from './image.dev.controller';
-import { ImageDevService } from './image.dev.service';
+import { Image } from './image.entity';
 import { ImageService } from './image.service';
 
 @Module({
-  controllers: [ImageController, ImageDevController],
-  providers: [ImageService, ImageDevService],
+  imports: [TypeOrmModule.forFeature([Image])],
+  controllers: [ImageController],
+  providers: [ImageService],
 })
 export class ImageModule {}

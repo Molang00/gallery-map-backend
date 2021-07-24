@@ -12,6 +12,7 @@ async function bootstrap() {
       parameterLimit: 1000000,
     }),
   );
+  app.enableCors();
   await app.listen(3030);
 }
 bootstrap();

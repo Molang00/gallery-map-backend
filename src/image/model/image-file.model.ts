@@ -4,17 +4,17 @@ export interface UploadImageRes {
 }
 
 export interface ImageFile {
-  image: Image;
+  image: ImageData;
   meta: ImageMeta;
 }
 
 export interface ImageItem {
+  filename: string;
   fieldname: string;
   originalname: string;
-  path: string;
 }
 
-export interface Image {
+export interface ImageData {
   fieldname: string;
   originalname: string;
   encoding: string;
@@ -27,10 +27,10 @@ export interface Image {
 
 export interface ImageMetaItem {
   GPSLatitude: number;
-  GPSLatitudeRef: string;
   GPSLongitude: number;
-  GPSLongitudeRef: string;
-  timezone: string;
+  height: number;
+  width: number;
+  CreateDate: number;
 }
 
 export interface ImageMeta {
@@ -47,7 +47,7 @@ export interface StartMarker {
 
 export interface Tags {
   ImageHeight: number;
-  Make: 'samsung';
+  Make: string;
   Orientation: number;
   ModifyDate: number;
   YResolution: number;
