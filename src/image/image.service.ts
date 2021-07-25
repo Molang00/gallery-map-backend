@@ -93,6 +93,7 @@ export class ImageService {
   getImageListByView(
     query: imageListByViewQuery,
   ): Promise<ImageListResponse[]> {
+    console.log(query);
     const rst = this.imageRepository
       .createQueryBuilder('image')
       .where('image.lat < :topLat', { topLat: query.topLat })
