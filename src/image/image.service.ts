@@ -36,8 +36,8 @@ export class ImageService {
     return {
       GPSLatitude: imageMeta.tags.GPSLatitude,
       GPSLongitude: imageMeta.tags.GPSLongitude,
-      height: imageMeta.imageSize.height,
-      width: imageMeta.imageSize.width,
+      height: imageMeta.tags.ExifImageHeight,
+      width: imageMeta.tags.ExifImageWidth,
       CreateDate: imageMeta.tags.CreateDate,
     };
   }
