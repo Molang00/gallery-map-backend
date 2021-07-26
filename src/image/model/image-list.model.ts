@@ -1,6 +1,6 @@
 import { Image } from '../image.entity';
 
-export class ImageListResponse {
+export class ImageResponse {
   path: string;
   lat: number;
   lng: number;
@@ -17,5 +17,24 @@ export class ImageListResponse {
     this.width = image.image_width;
     this.createDate = image.image_createDate;
     this.uploaded = image.image_uploaded;
+  }
+}
+
+export class ImageListResponse {
+  imageList: ImageResponse[];
+  total: number;
+  success: number;
+  fail: number;
+
+  constructor(
+    imageList: ImageResponse[],
+    total: number,
+    success: number,
+    fail: number,
+  ) {
+    this.imageList = imageList;
+    this.total = total;
+    this.success = success;
+    this.fail = fail;
   }
 }

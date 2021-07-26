@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ExifData, ExifParserFactory } from 'ts-exif-parser';
+import { ExifParserFactory } from 'ts-exif-parser';
 import * as fs from 'fs';
 import {
   ImageData,
@@ -9,11 +9,10 @@ import {
   ImageMetaItem,
   UploadImageRes,
 } from './model/image-file.model';
-import path from 'path/posix';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Image } from './image.entity';
 import { Repository } from 'typeorm';
-import { ImageListResponse } from './model/image-list.model';
+import { ImageListResponse, ImageResponse } from './model/image-list.model';
 
 @Injectable()
 export class ImageService {
@@ -49,7 +48,7 @@ export class ImageService {
     };
   }
 
-  uploadFile(file: Express.Multer.File): Image {
+  uploadFile(file: Express.Multer.File): ImageResponse {
     const res = {
       image: this.convertImage2ImageItem(file),
       meta: this.convertImageMeta2ImageMetaItem(
@@ -67,17 +66,31 @@ export class ImageService {
       new Date(),
     );
     console.log(image);
-    this.imageRepository.save(image);
+    try {
+      this.imageRepository.save(image);
+    } catch (e) {
+      console.log(e);
+      return undefined;
+    }
 
-    return image;
+    return new ImageResponse(image);
   }
 
-  uploadFileList(files: Express.Multer.File[]): Image[] {
-    const response = [];
+  uploadFileList(files: Express.Multer.File[]): ImageListResponse {
+    const imageList = [];
+    const total = files.length;
+    let success = 0,
+      fail = 0;
     files.forEach((file) => {
-      response.push(this.uploadFile(file));
+      const oneFileRes = this.uploadFile(file);
+      if (oneFileRes != undefined) {
+        imageList.push(oneFileRes);
+        success++;
+      } else {
+        fail++;
+      }
     });
-    return response;
+    return new ImageListResponse(imageList, total, success, fail);
   }
 
   getMetadataByImageName(imageName: string): any {
@@ -90,9 +103,7 @@ export class ImageService {
     return result;
   }
 
-  getImageListByView(
-    query: imageListByViewQuery,
-  ): Promise<ImageListResponse[]> {
+  getImageListByView(query: imageListByViewQuery): Promise<ImageResponse[]> {
     console.log(query);
     const rst = this.imageRepository
       .createQueryBuilder('image')
@@ -102,7 +113,7 @@ export class ImageService {
       .andWhere('image.lng < :rightLng', { rightLng: query.rightLng })
       .getRawMany()
       .then((raw) => {
-        return raw.map((it) => new ImageListResponse(it));
+        return raw.map((it) => new ImageResponse(it));
       });
     return rst;
   }

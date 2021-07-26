@@ -14,7 +14,7 @@ import { diskStorage } from 'multer';
 import { Image } from './image.entity';
 import { ImageService } from './image.service';
 import { editFileName, imageFileFilter } from './image.util';
-import { ImageListResponse } from './model/image-list.model';
+import { ImageListResponse, ImageResponse } from './model/image-list.model';
 
 @Controller('/image')
 export class ImageController {
@@ -44,7 +44,9 @@ export class ImageController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<Image> {
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<ImageResponse> {
     return this.imageService.uploadFile(file);
   }
 
@@ -58,14 +60,14 @@ export class ImageController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadMultipleFiles(@UploadedFiles() files): Promise<Image[]> {
+  async uploadMultipleFiles(
+    @UploadedFiles() files,
+  ): Promise<ImageListResponse> {
     return this.imageService.uploadFileList(files);
   }
 
   @Get('/listByView')
-  async test(
-    @Query() query: imageListByViewQuery,
-  ): Promise<ImageListResponse[]> {
+  async test(@Query() query: imageListByViewQuery): Promise<ImageResponse[]> {
     return this.imageService.getImageListByView(query);
   }
 
