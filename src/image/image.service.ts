@@ -32,13 +32,23 @@ export class ImageService {
   }
 
   convertImageMeta2ImageMetaItem(imageMeta: ImageMeta): ImageMetaItem {
-    return {
-      GPSLatitude: imageMeta.tags.GPSLatitude,
-      GPSLongitude: imageMeta.tags.GPSLongitude,
-      height: imageMeta.tags.ExifImageHeight,
-      width: imageMeta.tags.ExifImageWidth,
-      CreateDate: imageMeta.tags.CreateDate,
-    };
+    // image is rotated when Orientation is over 4 (google it, exif orientation)
+    if (imageMeta.tags.Orientation > 4)
+      return {
+        GPSLatitude: imageMeta.tags.GPSLatitude,
+        GPSLongitude: imageMeta.tags.GPSLongitude,
+        height: imageMeta.tags.ExifImageWidth,
+        width: imageMeta.tags.ExifImageHeight,
+        CreateDate: imageMeta.tags.CreateDate,
+      };
+    else
+      return {
+        GPSLatitude: imageMeta.tags.GPSLatitude,
+        GPSLongitude: imageMeta.tags.GPSLongitude,
+        height: imageMeta.tags.ExifImageHeight,
+        width: imageMeta.tags.ExifImageWidth,
+        CreateDate: imageMeta.tags.CreateDate,
+      };
   }
 
   getImageInfo(file: Express.Multer.File): ImageFile {
