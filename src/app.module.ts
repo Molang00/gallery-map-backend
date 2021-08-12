@@ -1,14 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { join } from 'path/posix';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { BoardModule } from './board/board.module';
 import configuration from './config/configuration';
 import { ImageModule } from './image/image.module';
 import { AppLoggerMiddleware } from './middleware/app-logger.middleware';
 import { ResourceModule } from './resource/resource.module';
-import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -21,7 +20,7 @@ import { BoardModule } from './board/board.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: configService.get('database.host'),
         port: configService.get('database.port'),
         username: configService.get('database.user'),

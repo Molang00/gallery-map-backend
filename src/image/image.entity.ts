@@ -8,10 +8,10 @@ export class Image {
   @PrimaryColumn()
   path: string;
 
-  @Column({ type: 'double' })
+  @Column({ type: 'double precision' })
   lat: number;
 
-  @Column({ type: 'double' })
+  @Column({ type: 'double precision' })
   lng: number;
 
   @Column({ type: 'int' })
@@ -20,10 +20,10 @@ export class Image {
   @Column({ type: 'int' })
   width: number;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   createDate: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   uploaded: Date;
 
   constructor(

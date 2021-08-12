@@ -14,10 +14,10 @@ export class Board {
   @Column()
   content: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   created: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   updated: Date;
 
   @Column({ default: 0 })
