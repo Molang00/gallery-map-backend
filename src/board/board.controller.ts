@@ -6,7 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
+import { Pagination } from 'src/common/paginate/pagination';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -21,8 +25,16 @@ export class BoardController {
   }
 
   @Get()
-  findAll() {
-    return this.boardService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe)
+    page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe)
+    limit: number = 10,
+  ): Promise<Pagination<object>> {
+    return this.boardService.findAll({
+      page,
+      limit,
+    });
   }
 
   @Get(':id')

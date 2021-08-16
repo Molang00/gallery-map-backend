@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Pagination } from 'src/common/paginate/pagination';
+import { PaginationOption } from 'src/common/paginate/pagination.option.interface';
+import { PaginationFactory } from 'src/common/paginate/paginationFactory';
 import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -26,28 +29,27 @@ export class BoardService {
       ),
     );
     return Object.assign({
-      data: { ...board },
-      statusCode: 201,
+      data: board,
       statusMsg: `saved successfully`,
     });
   }
 
-  async findAll() {
-    const baordList = await this.boardRepository.find();
-    return Object.assign({
-      data: baordList,
-      statusCode: 200,
-      statusMsg: `데이터 조회가 성공적으로 완료되었습니다.`,
-    });
+  async findAll(options: PaginationOption): Promise<Pagination<object>> {
+    const queryBuilder = this.boardRepository
+      .createQueryBuilder('b')
+      .select('b.*')
+      .orderBy('b.created', 'DESC');
+
+    return PaginationFactory.paginate(queryBuilder, options);
   }
 
   async findOne(id: number) {
     const foundBoard = await this.boardRepository.findOne({ id: id });
-    return Object.assign({
-      data: foundBoard,
-      statusCode: 200,
-      statusMsg: `데이터 조회가 성공적으로 완료되었습니다.`,
+    foundBoard.readCnt += 1;
+    this.boardRepository.update(id, {
+      readCnt: foundBoard.readCnt,
     });
+    return Object.assign(foundBoard);
   }
 
   async update(id: number, updateBoardDto: UpdateBoardDto) {
@@ -55,7 +57,6 @@ export class BoardService {
     await this.boardRepository.update(id, updateBoardDto);
     return Object.assign({
       data: { userId: id },
-      statusCode: 204,
       statusMsg: `updated successfully`,
     });
   }
@@ -64,7 +65,6 @@ export class BoardService {
     await this.boardRepository.delete({ id: id });
     return Object.assign({
       data: { userId: id },
-      statusCode: 204,
       statusMsg: `deleted successfully`,
     });
   }
