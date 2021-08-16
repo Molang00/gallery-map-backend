@@ -75,7 +75,6 @@ export class ImageService {
       new Date(res.meta.CreateDate * 1000),
       new Date(),
     );
-    console.log(image);
     try {
       this.imageRepository.save(image);
     } catch (e) {
@@ -114,7 +113,6 @@ export class ImageService {
   }
 
   getImageListByView(query: imageListByViewQuery): Promise<ImageResponse[]> {
-    console.log(query);
     const rst = this.imageRepository
       .createQueryBuilder('image')
       .where('image.lat < :topLat', { topLat: query.topLat })

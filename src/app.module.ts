@@ -8,6 +8,7 @@ import configuration from './config/configuration';
 import { ImageModule } from './image/image.module';
 import { AppLoggerMiddleware } from './middleware/app-logger.middleware';
 import { ResourceModule } from './resource/resource.module';
+import { EventMessageModule } from './event-message/event-message.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ResourceModule } from './resource/resource.module';
     ImageModule,
     ResourceModule,
     BoardModule,
+    EventMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
