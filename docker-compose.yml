@@ -7,7 +7,7 @@ services:
     build:
       context: .
       target: development
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfile
     command: npm run start:dev
     ports:
       #   - 3000:3000
@@ -24,7 +24,7 @@ services:
     build:
       context: .
       target: production
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfile
     command: npm run start:prod
     ports:
       #   - 3000:3000
