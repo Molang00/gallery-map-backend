@@ -65,6 +65,7 @@ export class ImageService {
         this.getMetadataByImageName(file.filename),
       ),
     };
+    console.log(res);
 
     const image = new Image(
       res.image.filename,
@@ -99,6 +100,7 @@ export class ImageService {
         fail++;
       }
     });
+    console.log('upload file list success: ' + success + '/' + total + '\n');
     return new ImageListResponse(imageList, total, success, fail);
   }
 
