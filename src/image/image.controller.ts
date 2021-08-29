@@ -47,7 +47,7 @@ export class ImageController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ImageResponse> {
-    return this.imageService.uploadFile(file);
+    return await this.imageService.uploadFile(file);
   }
 
   @Post('/upload/list')
@@ -63,7 +63,7 @@ export class ImageController {
   async uploadMultipleFiles(
     @UploadedFiles() files,
   ): Promise<ImageListResponse> {
-    return this.imageService.uploadFileList(files);
+    return await this.imageService.uploadFileList(files);
   }
 
   @Get('/listByView')

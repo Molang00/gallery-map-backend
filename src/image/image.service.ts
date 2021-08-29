@@ -58,7 +58,7 @@ export class ImageService {
     };
   }
 
-  uploadFile(file: Express.Multer.File): ImageResponse {
+  async uploadFile(file: Express.Multer.File): Promise<ImageResponse> {
     const res = {
       image: this.convertImage2ImageItem(file),
       meta: this.convertImageMeta2ImageMetaItem(
@@ -77,7 +77,7 @@ export class ImageService {
       new Date(),
     );
     try {
-      this.imageRepository.save(image);
+      await this.imageRepository.save(image);
     } catch (e) {
       console.log(e);
       return undefined;
@@ -86,14 +86,16 @@ export class ImageService {
     return new ImageResponse(image);
   }
 
-  uploadFileList(files: Express.Multer.File[]): ImageListResponse {
+  async uploadFileList(
+    files: Express.Multer.File[],
+  ): Promise<ImageListResponse> {
     const imageList = [];
     const total = files.length;
     let success = 0,
       fail = 0;
     console.log('start uploading file list');
-    files.forEach((file) => {
-      const oneFileRes = this.uploadFile(file);
+    files.forEach(async (file) => {
+      const oneFileRes = await this.uploadFile(file);
       if (oneFileRes != undefined) {
         imageList.push(oneFileRes);
         success++;
