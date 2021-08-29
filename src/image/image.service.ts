@@ -91,6 +91,7 @@ export class ImageService {
     const total = files.length;
     let success = 0,
       fail = 0;
+    console.log('start uploading file list');
     files.forEach((file) => {
       const oneFileRes = this.uploadFile(file);
       if (oneFileRes != undefined) {
@@ -111,6 +112,7 @@ export class ImageService {
     const buffer = fs.readFileSync(file);
     const parser = ExifParserFactory.create(buffer);
     const result = parser.parse();
+    console.log(result);
     return result;
   }
 
