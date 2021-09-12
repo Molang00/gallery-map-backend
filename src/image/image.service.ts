@@ -132,6 +132,7 @@ export class ImageService {
       .andWhere('image.lng < :rightLng', { rightLng: query.rightLng })
       .getRawMany()
       .then((raw) => {
+        console.log(raw.map((it) => new ImageResponse(it)));
         return raw.map((it) => new ImageResponse(it));
       });
     return rst;
