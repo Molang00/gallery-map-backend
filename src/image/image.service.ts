@@ -169,7 +169,6 @@ export class ImageService {
     const buffer = fs.readFileSync(file);
     const parser = ExifParserFactory.create(buffer);
     const result = parser.parse();
-    console.log(result);
     return result;
   }
 
