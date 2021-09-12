@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ExifParserFactory } from 'ts-exif-parser';
 import * as fs from 'fs';
 import {
@@ -17,6 +17,8 @@ import {
   ImageResponse,
   UploadImageResponse,
 } from './model/image-list.model';
+import { S3 } from 'aws-sdk';
+import { exception } from 'console';
 
 @Injectable()
 export class ImageService {
@@ -80,13 +82,61 @@ export class ImageService {
       new Date(res.meta.CreateDate * 1000),
       new Date(),
     );
+    if (
+      image.lat == undefined ||
+      image.lng == undefined ||
+      image.createDate == undefined
+    ) {
+      console.log(file.originalname + ': lat or lng or createdate is null!');
+      return undefined;
+    }
+
     try {
+      await this.uploadS3(
+        './resource/image/' + file.filename,
+        process.env.AWS_S3_BUCKET_NAME,
+        'image/' + file.filename,
+      ).catch((reason) => {
+        throw new InternalServerErrorException(reason);
+      });
+
       await this.imageRepository.save(image);
+
       return new UploadImageResponse(file.originalname, image);
     } catch (e) {
       console.log(e);
       return undefined;
     }
+  }
+
+  async uploadS3(localFileName, bucket, uploadFileName) {
+    const s3 = this.getS3();
+    const params = {
+      Bucket: bucket,
+      Key: String(uploadFileName),
+      Body: fs.readFileSync(localFileName),
+      ACL: 'public-read',
+    };
+
+    // console.log(params);
+    return new Promise((resolve, reject) => {
+      s3.upload(params, (err, data) => {
+        if (err) {
+          console.log(err);
+          reject(err.message);
+        }
+        console.log(data);
+        resolve(data);
+      });
+    });
+  }
+
+  getS3() {
+    console.log(process.env.AWS_ACCESS_KEY_ID);
+    return new S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    });
   }
 
   async uploadFileList(
