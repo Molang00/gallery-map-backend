@@ -14,7 +14,11 @@ import { diskStorage } from 'multer';
 import { Image } from './image.entity';
 import { ImageService } from './image.service';
 import { editFileName, imageFileFilter } from './image.util';
-import { ImageListResponse, ImageResponse } from './model/image-list.model';
+import {
+  ImageListResponse,
+  ImageResponse,
+  UploadImageResponse,
+} from './model/image-list.model';
 
 @Controller('/image')
 export class ImageController {
@@ -46,7 +50,7 @@ export class ImageController {
   )
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<ImageResponse> {
+  ): Promise<UploadImageResponse> {
     return await this.imageService.uploadFile(file);
   }
 

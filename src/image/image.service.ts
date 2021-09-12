@@ -12,7 +12,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Image } from './image.entity';
 import { Repository } from 'typeorm';
-import { ImageListResponse, ImageResponse } from './model/image-list.model';
+import {
+  ImageListResponse,
+  ImageResponse,
+  UploadImageResponse,
+} from './model/image-list.model';
 
 @Injectable()
 export class ImageService {
@@ -58,7 +62,7 @@ export class ImageService {
     };
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<ImageResponse> {
+  async uploadFile(file: Express.Multer.File): Promise<UploadImageResponse> {
     const res = {
       image: this.convertImage2ImageItem(file),
       meta: this.convertImageMeta2ImageMetaItem(
@@ -78,12 +82,11 @@ export class ImageService {
     );
     try {
       await this.imageRepository.save(image);
+      return new UploadImageResponse(file.originalname, image);
     } catch (e) {
       console.log(e);
       return undefined;
     }
-
-    return new ImageResponse(image);
   }
 
   async uploadFileList(
@@ -94,16 +97,18 @@ export class ImageService {
     let success = 0,
       fail = 0;
     console.log('start uploading file list');
-    files.forEach(async (file) => {
-      const oneFileRes = await this.uploadFile(file);
-      if (oneFileRes != undefined) {
-        imageList.push(oneFileRes);
-        success++;
-      } else {
-        fail++;
-      }
-    });
-    console.log('upload file list success: ' + success + '/' + total + '\n');
+
+    await Promise.all(
+      files.map(async (file) => {
+        const oneFileRes = await this.uploadFile(file);
+        if (oneFileRes != undefined) {
+          imageList.push(oneFileRes);
+          success++;
+        } else {
+          fail++;
+        }
+      }),
+    );
     return new ImageListResponse(imageList, total, success, fail);
   }
 
