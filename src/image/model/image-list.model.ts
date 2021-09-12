@@ -31,13 +31,13 @@ export class ImageResponse {
   uploaded: Date;
 
   constructor(image) {
-    this.path = image.path;
-    this.lat = image.lat;
-    this.lng = image.lng;
-    this.height = image.height;
-    this.width = image.width;
-    this.createDate = image.createDate;
-    this.uploaded = image.uploaded;
+    this.path = image.image_path;
+    this.lat = image.image_lat;
+    this.lng = image.image_lng;
+    this.height = image.image_height;
+    this.width = image.image_width;
+    this.createDate = image.image_createDate;
+    this.uploaded = image.image_uploaded;
   }
 }
 
