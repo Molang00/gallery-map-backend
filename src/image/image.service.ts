@@ -18,7 +18,6 @@ import {
   UploadImageResponse,
 } from './model/image-list.model';
 import { S3 } from 'aws-sdk';
-import { exception } from 'console';
 
 @Injectable()
 export class ImageService {
